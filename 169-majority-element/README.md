@@ -21,3 +21,21 @@
 
 <p>&nbsp;</p>
 <strong>Follow-up:</strong> Could you solve the problem in linear time and in <code>O(1)</code> space?
+
+
+<p>
+	other way to solve this is by
+	1)sorting  with extra space O(n)
+	<pre>
+    var majorityElement = function(nums) {
+    nums.sort((a, b) => a - b);
+    const n = nums.length;
+    return nums[Math.floor(n / 2)];
+    console.log(majorityElement([1, 2, 2, 2, 4]));
+		</pre>
+};
+
+
+
+        2)Map   extra space O(n)
+</p>
