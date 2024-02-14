@@ -26,7 +26,7 @@ Now, when you perform a bitwise AND (&) between n and (n - 1), it will be 0 only
 So, the condition n > 0 && (n & (n - 1)) === 0 checks if the number is positive (n > 0) and has only one '1' bit, making it a power of 2. This is an efficient and clever way to perform this check without using loops or recursion.
  */
 var isPowerOfTwo = function(n) {
-    return n > 0 && (n & (n - 1)) === 0;
+    return n > 0 && !(n & (n - 1))
 };
 // @lc code=end
 
