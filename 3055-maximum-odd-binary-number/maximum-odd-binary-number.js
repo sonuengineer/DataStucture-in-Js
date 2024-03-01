@@ -1,10 +1,20 @@
+// var maximumOddBinaryNumber = function(s) {
+//     let chars = s.split('').sort().reverse();
+//     for (let i = chars.length - 1; i >= 0; i--) {
+//         if (chars[i] === '1') {
+//             [chars[i], chars[chars.length - 1]] = [chars[chars.length - 1], chars[i]];
+//             break;
+//         }
+//     }
+//     return chars.join('');
+// };
 var maximumOddBinaryNumber = function(s) {
-    let cnt1 = 0, cnt0 = 0;
-    for (let a of s) {
-        if (a === '1') cnt1++;
-        else if (a === '0') cnt0++;
+    let chars = s.split('').sort().reverse();
+    for (let i = chars.length - 1; i >= 0; i--) {
+        if (chars[i] === '1') {
+            [chars[i], chars[chars.length - 1]] = [chars[chars.length - 1], chars[i]];
+            break;
+        }
     }
-    let ans = '1'.repeat(cnt1 - 1) + '0'.repeat(cnt0) + '1';
-    return ans;
+    return chars.join('');
 };
-
