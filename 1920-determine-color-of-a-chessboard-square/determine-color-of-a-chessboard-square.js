@@ -1,0 +1,1 @@
+const squareIsWhite = coordinates => (((coordinates.charCodeAt(0) - 97) + (coordinates[1] - 1)) % 2);
