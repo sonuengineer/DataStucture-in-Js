@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Practice — Solved Problems in JavaScript</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0c14;--panel:#111827;--card:#1a2035;--card2:#1f2947;--accent:#7c3aed;--accent2:#06b6d4;--green:#10b981;--text:#f1f5f9;--muted:#64748b;--border:#1e293b}
+body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.top{background:rgba(10,12,20,.97);border-bottom:1px solid var(--border);padding:14px 22px;position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.logo{font-size:1.2rem;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.top a.back{font-size:.78rem;color:var(--muted)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 22px 60px}
+.hero{background:linear-gradient(135deg,#1a1040,#0f1a30);border:1px solid var(--accent);border-radius:14px;padding:20px;margin-bottom:18px}
+.hero h1{font-size:1.5rem;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:.86rem}
+.search{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:.9rem;margin:6px 0 14px}
+.count{font-size:.76rem;color:var(--muted);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px}
+.item{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-size:.8rem;transition:.12s;display:flex;align-items:center;gap:8px}
+.item:hover{border-color:var(--accent);transform:translateY(-1px)}
+.item .id{font-weight:800;color:var(--accent2);font-size:.72rem;min-width:34px}
+.item .nm{color:#cbd5e1}
+.empty{color:var(--muted);font-size:.85rem;padding:20px 0}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">&#129518; DSA Practice — JavaScript</div>
+  <a class="back" href="https://sonuengineer.github.io/jobAi/">&larr; Back to Job GPS</a>
+</div>
+<div class="wrap">
+  <div class="hero">
+    <h1>Solved Data-Structure &amp; Algorithm Problems</h1>
+    <p>Your LeetCode practice library in JavaScript — the daily coding drill behind every Job GPS track. Search by number or name; each opens its solution on GitHub.</p>
+  </div>
+  <input class="search" id="q" placeholder="Search problems… (e.g. two sum, 1016, binary tree)" autocomplete="off">
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">No problems match that search.</div>
+</div>
+<script>
+var REPO = "https://github.com/sonuengineer/DataStucture-in-Js/tree/main/";
+var P = [
+  "1-two-sum",
+  "100-same-tree",
+  "1016-subarray-sums-divisible-by-k",
+  "1019-squares-of-a-sorted-array",
+  "1021-distribute-coins-in-binary-tree",
+  "1030-smallest-string-starting-from-leaf",
+  "1034-subarrays-with-k-different-integers",
+  "1037-minimum-number-of-k-consecutive-bit-flips",
+  "1039-find-the-town-judge",
+  "1044-find-common-characters",
+  "109-convert-sorted-list-to-binary-search-tree",
+  "1092-maximum-difference-between-node-and-ancestor",
+  "1145-number-of-submatrices-that-sum-to-target",
+  "1147-flip-columns-for-maximum-number-of-equal-rows",
+  "1208-maximum-nesting-depth-of-two-valid-parentheses-strings",
+  "1212-sequential-digits",
+  "1217-relative-sort-array",
+  "1221-element-appearing-more-than-25-in-sorted-array",
+  "1224-minimum-falling-path-sum-ii",
+  "1236-n-th-tribonacci-number",
+  "1250-longest-common-subsequence",
+  "1253-sort-the-matrix-diagonally",
+  "1263-number-of-dice-rolls-with-target-sum",
+  "1267-remove-zero-sum-consecutive-nodes-from-linked-list",
+  "1274-number-of-days-between-two-dates",
+  "1287-distance-between-bus-stops",
+  "129-sum-root-to-leaf-numbers",
+  "1293-three-consecutive-odds",
+  "1300-critical-connections-in-a-network",
+  "1319-unique-number-of-occurrences",
+  "1331-path-with-maximum-gold",
+  "1352-maximum-profit-in-job-scheduling",
+  "1354-find-players-with-zero-or-one-losses",
+  "136-single-number",
+  "1362-airplane-seat-assignment-probability",
+  "137-single-number-ii",
+  "1370-count-number-of-nice-subarrays",
+  "1371-minimum-remove-to-make-valid-parentheses",
+  "1379-reconstruct-a-2-row-binary-matrix",
+  "1381-maximum-score-words-formed-by-letters",
+  "1386-shift-2d-grid",
+  "140-word-break-ii",
+  "141-linked-list-cycle",
+  "1423-maximum-number-of-occurrences-of-a-substring",
+  "1429-verbal-arithmetic-puzzle",
+  "143-reorder-list",
+  "1431-all-ancestors-of-a-node-in-a-directed-acyclic-graph",
+  "1442-number-of-operations-to-make-network-connected",
+  "1456-find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance",
+  "1474-longest-zigzag-path-in-a-binary-tree",
+  "1476-count-negative-numbers-in-a-sorted-matrix",
+  "1480-movie-rating",
+  "1489-pizza-with-3n-slices",
+  "149-max-points-on-a-line",
+  "1496-lucky-numbers-in-a-matrix",
+  "150-evaluate-reverse-polish-notation",
+  "1511-count-number-of-teams",
+  "152-maximum-product-subarray",
+  "1526-html-entity-parser",
+  "153-find-minimum-in-rotated-sorted-array",
+  "1530-check-if-a-string-can-break-another-string",
+  "1537-maximum-score-after-splitting-a-string",
+  "1539-diagonal-traverse-ii",
+  "154-find-minimum-in-rotated-sorted-array-ii",
+  "1552-build-an-array-with-stack-operations",
+  "1559-cherry-pickup-ii",
+  "1563-maximum-number-of-darts-inside-of-a-circular-dartboard",
+  "1568-pseudo-palindromic-paths-in-a-binary-tree",
+  "1572-subrectangle-queries",
+  "1573-find-two-non-overlapping-sub-arrays-each-with-target-sum",
+  "1605-minimum-number-of-days-to-make-m-bouquets",
+  "1616-minimum-difference-between-largest-and-smallest-value-in-three-moves",
+  "1619-path-crossing",
+  "1633-minimum-number-of-increments-on-subarrays-to-form-a-target-array",
+  "1635-number-of-good-pairs",
+  "1637-string-compression-ii",
+  "1642-water-bottles",
+  "1646-kth-missing-positive-number",
+  "1656-count-good-triplets",
+  "1666-make-the-string-great",
+  "1670-patients-with-a-condition",
+  "1684-find-latest-group-of-size-m",
+  "1689-detect-pattern-of-length-m-repeated-k-or-more-times",
+  "169-majority-element",
+  "1690-maximum-length-of-subarray-with-positive-product",
+  "1694-make-sum-divisible-by-p",
+  "1696-strange-printer-ii",
+  "1704-special-positions-in-a-binary-matrix",
+  "1711-find-valid-matrix-given-row-and-column-sums",
+  "1720-crawler-log-folder",
+  "173-binary-search-tree-iterator",
+  "1730-special-array-with-x-elements-greater-than-or-equal-x",
+  "1731-even-odd-tree",
+  "1737-maximum-nesting-depth-of-the-parentheses",
+  "1741-sort-array-by-increasing-frequency",
+  "1742-widest-vertical-area-between-two-points-containing-no-points",
+  "1746-largest-substring-between-two-equal-characters",
+  "1760-check-array-formation-through-concatenation",
+  "1762-furthest-building-you-can-reach",
+  "1765-merge-in-between-linked-lists",
+  "1777-determine-if-two-strings-are-close",
+  "1802-number-of-students-unable-to-eat-lunch",
+  "1817-calculate-money-in-leetcode-bank",
+  "1823-determine-if-string-halves-are-alike",
+  "183-customers-who-never-order",
+  "1833-find-the-highest-altitude",
+  "1850-minimum-length-of-string-after-deleting-similar-ends",
+  "1858-latest-time-by-replacing-hidden-digits",
+  "1874-form-array-by-concatenating-subarrays-of-another-array",
+  "1884-minimum-changes-to-make-alternating-binary-string",
+  "1885-count-number-of-homogenous-substrings",
+  "1896-maximum-score-from-performing-multiplication-operations",
+  "190-reverse-bits",
+  "1907-count-pairs-with-xor-in-a-range",
+  "1912-number-of-restricted-paths-from-first-to-last-node",
+  "1916-find-center-of-star-graph",
+  "1918-maximum-score-of-a-good-subarray",
+  "1920-determine-color-of-a-chessboard-square",
+  "1934-evaluate-the-bracket-pairs-of-a-string",
+  "1956-maximum-element-after-decreasing-and-rearranging",
+  "1988-minimize-maximum-pair-sum-in-array",
+  "1993-sum-of-all-subset-xor-totals",
+  "1994-minimum-number-of-swaps-to-make-the-binary-string-alternating",
+  "200-number-of-islands",
+  "201-bitwise-and-of-numbers-range",
+  "2011-maximum-value-after-insertion",
+  "2042-maximum-product-difference-between-two-pairs",
+  "2044-number-of-wonderful-substrings",
+  "205-isomorphic-strings",
+  "206-reverse-linked-list",
+  "2083-three-divisors",
+  "210-course-schedule-ii",
+  "2103-find-all-groups-of-farmland",
+  "211-design-add-and-search-words-data-structure",
+  "2113-find-the-kth-largest-integer-in-the-array",
+  "2121-find-if-path-exists-in-graph",
+  "2128-reverse-prefix-of-word",
+  "2131-smallest-missing-genetic-value-in-each-subtree",
+  "2148-minimum-number-of-moves-to-seat-everyone",
+  "2149-remove-colored-pieces-if-both-neighbors-are-the-same-color",
+  "2163-kth-distinct-string-in-an-array",
+  "2171-second-minimum-time-to-reach-destination",
+  "2182-find-the-minimum-and-maximum-number-of-nodes-between-critical-points",
+  "2195-time-needed-to-buy-tickets",
+  "2213-find-all-people-with-secret",
+  "2231-find-first-palindromic-string-in-the-array",
+  "2244-number-of-laser-beams-in-a-bank",
+  "2271-rearrange-array-elements-by-sign",
+  "2277-count-equal-and-divisible-pairs-in-an-array",
+  "2298-count-integers-with-even-digit-sum",
+  "2299-merge-nodes-in-between-zeros",
+  "231-power-of-two",
+  "2311-minimum-white-tiles-after-covering-with-carpets",
+  "2324-find-triangular-sum-of-an-array",
+  "234-palindrome-linked-list",
+  "2343-count-unguarded-cells-in-the-grid",
+  "2347-count-nodes-equal-to-average-of-subtree",
+  "2355-maximum-consecutive-floors-without-special-floors",
+  "2365-percentage-of-letter-in-string",
+  "2366-maximum-bags-with-full-capacity-of-rocks",
+  "237-delete-node-in-a-linked-list",
+  "2379-maximum-total-importance-of-roads",
+  "238-product-of-array-except-self",
+  "2384-root-equals-sum-of-children",
+  "2400-minimum-score-after-removals-on-a-tree",
+  "2416-evaluate-boolean-binary-tree",
+  "2429-design-a-food-rating-system",
+  "2435-shortest-impossible-sequence-of-rolls",
+  "2444-longest-ideal-subsequence",
+  "2454-largest-local-values-in-a-matrix",
+  "2470-removing-stars-from-a-string",
+  "2471-minimum-amount-of-time-to-collect-garbage",
+  "2472-build-a-matrix-with-conditions",
+  "2486-most-frequent-even-element",
+  "2492-length-of-the-longest-alphabetical-continuous-substring",
+  "2527-count-subarrays-with-fixed-bounds",
+  "2536-determine-if-two-events-have-conflict",
+  "2548-destroy-sequential-targets",
+  "2571-find-the-pivot-integer",
+  "2573-remove-nodes-from-linked-list",
+  "2590-maximum-star-sum-of-a-graph",
+  "260-single-number-iii",
+  "2606-difference-between-ones-and-zeros-in-row-and-column",
+  "2634-minimum-common-value",
+  "2645-pass-the-pillow",
+  "2670-make-k-subarray-sums-equal",
+  "268-missing-number",
+  "2722-prime-in-diagonal",
+  "2724-convert-an-array-into-a-2d-array-with-conditions",
+  "2726-minimum-reverse-operations",
+  "273-integer-to-english-words",
+  "2731-memoize",
+  "2744-memoize-ii",
+  "2762-cache-with-time-limit",
+  "278-first-bad-version",
+  "279-perfect-squares",
+  "2819-remove-trailing-zeros-from-a-string",
+  "2825-minimize-string-length",
+  "2827-greatest-common-divisor-traversal",
+  "2832-find-the-longest-equal-subarray",
+  "2837-minimum-operations-to-make-the-integer-zero",
+  "2860-sort-by",
+  "287-find-the-duplicate-number",
+  "2871-double-a-number-represented-as-a-linked-list",
+  "2873-prime-pairs-with-target-sum",
+  "2887-sort-vowels-in-a-string",
+  "300-longest-increasing-subsequence",
+  "3031-construct-product-matrix",
+  "3034-points-that-intersect-with-cars",
+  "3055-maximum-odd-binary-number",
+  "307-range-sum-query-mutable",
+  "3094-minimum-number-of-operations-to-make-array-empty",
+  "310-minimum-height-trees",
+  "3153-apply-operations-on-array-to-maximize-sum-of-squares",
+  "3213-count-subarrays-where-max-element-appears-at-least-k-times",
+  "3225-length-of-longest-subarray-with-at-most-k-frequency",
+  "3242-count-elements-with-maximum-frequency",
+  "3249-minimum-number-of-operations-to-make-array-xor-equal-to-k",
+  "3262-find-polygon-with-the-largest-perimeter",
+  "3276-minimum-number-of-pushes-to-type-word-ii",
+  "33-search-in-rotated-sorted-array",
+  "330-patching-array",
+  "3303-find-beautiful-indices-in-the-given-array-ii",
+  "3307-find-the-maximum-sum-of-node-values",
+  "3327-minimum-moves-to-pick-k-ones",
+  "3351-maximize-happiness-of-selected-children",
+  "3379-score-of-a-string",
+  "338-counting-bits",
+  "3427-special-array-ii",
+  "367-valid-perfect-square",
+  "368-largest-divisible-subset",
+  "374-guess-number-higher-or-lower",
+  "377-combination-sum-iv",
+  "380-insert-delete-getrandom-o1",
+  "387-first-unique-character-in-a-string",
+  "392-is-subsequence",
+  "404-sum-of-left-leaves",
+  "405-convert-a-number-to-hexadecimal",
+  "409-longest-palindrome",
+  "41-first-missing-positive",
+  "42-trapping-rain-water",
+  "441-arranging-coins",
+  "442-find-all-duplicates-in-an-array",
+  "443-string-compression",
+  "446-arithmetic-slices-ii-subsequence",
+  "451-sort-characters-by-frequency",
+  "452-minimum-number-of-arrows-to-burst-balloons",
+  "455-assign-cookies",
+  "463-island-perimeter",
+  "480-sliding-window-median",
+  "506-relative-ranks",
+  "513-find-bottom-left-tree-value",
+  "514-freedom-trail",
+  "52-n-queens-ii",
+  "523-continuous-subarray-sum",
+  "525-contiguous-array",
+  "535-encode-and-decode-tinyurl",
+  "543-diameter-of-binary-tree",
+  "552-student-attendance-record-ii",
+  "57-insert-interval",
+  "576-out-of-boundary-paths",
+  "58-length-of-last-word",
+  "596-classes-more-than-5-students",
+  "601-human-traffic-of-stadium",
+  "621-task-scheduler",
+  "623-add-one-row-to-tree",
+  "629-k-inverse-pairs-array",
+  "633-sum-of-square-numbers",
+  "648-replace-words",
+  "654-maximum-binary-tree",
+  "66-plus-one",
+  "678-valid-parenthesis-string",
+  "69-sqrtx",
+  "713-subarray-product-less-than-k",
+  "739-daily-temperatures",
+  "74-search-a-2d-matrix",
+  "745-find-smallest-letter-greater-than-target",
+  "746-prefix-and-suffix-search",
+  "75-sort-colors",
+  "753-open-the-lock",
+  "76-minimum-window-substring",
+  "78-subsets",
+  "79-word-search",
+  "792-binary-search",
+  "795-k-th-symbol-in-grammar",
+  "802-k-th-smallest-prime-fraction",
+  "803-cheapest-flights-within-k-stops",
+  "807-custom-sort-string",
+  "823-split-array-with-same-average",
+  "85-maximal-rectangle",
+  "863-sum-of-distances-in-tree",
+  "868-push-dominoes",
+  "870-magic-squares-in-grid",
+  "874-backspace-string-compare",
+  "875-longest-mountain-in-array",
+  "876-hand-of-straights",
+  "891-score-after-flipping-matrix",
+  "898-transpose-matrix",
+  "904-leaf-similar-trees",
+  "908-middle-of-the-linked-list",
+  "91-decode-ways",
+  "917-boats-to-save-people",
+  "92-reverse-linked-list-ii",
+  "921-spiral-matrix-iii",
+  "943-sum-of-subarray-minimums",
+  "950-x-of-a-kind-in-a-deck-of-cards",
+  "957-minimum-add-to-make-parentheses-valid",
+  "96-unique-binary-search-trees",
+  "966-binary-subarrays-with-sum",
+  "967-minimum-falling-path-sum",
+  "975-range-sum-of-bst",
+  "982-minimum-increment-to-make-array-unique",
+  "985-bag-of-tokens",
+  "987-reveal-cards-in-increasing-order",
+  "999-regions-cut-by-slashes",
+];
+(function () {
+  var grid = document.getElementById("grid");
+  var countEl = document.getElementById("count");
+  var emptyEl = document.getElementById("empty");
+  var q = document.getElementById("q");
+  function idOf(s){ var m = s.match(/^(\d+)/); return m ? m[1] : ""; }
+  function nameOf(s){ return s.replace(/^\d+-?/, "").replace(/-/g, " "); }
+  function render(list){
+    if(!list.length){ grid.innerHTML=""; emptyEl.style.display="block"; countEl.textContent=""; return; }
+    emptyEl.style.display="none";
+    var html="";
+    for(var i=0;i<list.length;i++){
+      var d=list[i];
+      html += "<a class='item' href='"+REPO+encodeURIComponent(d)+"' target='_blank' rel='noopener'>"
+        + "<span class='id'>"+(idOf(d)||"#")+"</span><span class='nm'>"+nameOf(d)+"</span></a>";
+    }
+    grid.innerHTML=html;
+    countEl.textContent = list.length + " of " + P.length + " problems";
+  }
+  function filter(){
+    var t=q.value.trim().toLowerCase();
+    if(!t){ render(P); return; }
+    render(P.filter(function(d){ return d.toLowerCase().indexOf(t)>=0; }));
+  }
+  q.addEventListener("input", filter);
+  render(P);
+})();
+</script>
+</body>
+</html>
